@@ -78,12 +78,14 @@ public class Solution {
                             break;
                     }
 				}
+				// 스택배열을 돌며 스택이 비어있는지 확인(비어있어야함)
 				for (Stack<Character> stack : stackArr) {
-		            if (!stack.isEmpty()) {
+		            if (!stack.isEmpty()) { // 비어있지않으면 false,break;
 		            	result = false;
 		            	break;
 		            }
 		        }
+				// 최종결과
 				if (result) {
 					System.out.println("#"+tc+" 1");
 				}
