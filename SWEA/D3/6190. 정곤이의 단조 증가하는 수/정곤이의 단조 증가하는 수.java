@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Solution {
@@ -23,24 +22,16 @@ public class Solution {
             	arr[i]=Integer.parseInt(st.nextToken());
             }
             
-            // 정수들의 곱(A_i * A_j)을 담은 배열
-            int[] multiple = new int[N*(N-1)/2];
-            int k=0;
+            int max=-2;
+            // A_i * A_j 값을 구해서 바로 단조증가 판단, 그 최대값을 출력
             for(int i=0;i<N-1;i++) {
             	for(int j=i+1;j<N;j++) {
-            		multiple[k]=arr[i]*arr[j];
-            		k++;
+            		max =Math.max(ismonotoneinc(arr[i]*arr[j]),max);;
             	}
-            }
-            int max=-2;
-            // multiple의 배열을 돌며 단조증가 판단, 그 최대값을 출력
-            for(int i=0;i<multiple.length;i++) {
-            	max =Math.max(ismonotoneinc(multiple[i]),max);
             }
             System.out.println("#"+tc+" "+max);
         }
     }
-    
     static int ismonotoneinc(int a) {
     	// string으로 변환
     	String str = Integer.toString(a);	
