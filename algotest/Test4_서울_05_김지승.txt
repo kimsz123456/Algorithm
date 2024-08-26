@@ -1,0 +1,66 @@
+1. 단순(단방향) 연결 리스트의 삽입 및 삭제 연산의 의사 코드 또는 java 코드를 작성하세요
+삽입 : 
+
+- 맨 뒤에 삽입하는 경우
+now = head.data;
+next = head.link;
+// next가 없을(null)때까지 이동
+while(next!=null){
+	now = next.data;
+	next = next.link;
+}
+// next에 data를 연결한다.
+now.link = data;
+
+- 중간에 삽입하는 경우
+now = head.data;
+next = head.link;
+
+(1) B의 뒤에 삽입한다고 가정 
+// next가 원하는 위치(B의 뒤라고 가정)때까지 이동
+while(now!=B){
+	now = next.data;
+	next = next.link;
+}
+// B의 링크를 원하는 데이터로 변경, 원하는 데이터의 링크를 B의 링크로 변경
+now.link = data;
+data.link = next;
+
+(2) B의 앞에 삽입한다고 가정
+// next가 원하는 위치(B의 앞이라고 가정)때까지 이동
+while(next!=B){
+	now = next.data;
+	next = next.link;
+}
+// 현재의 링크를 원하는 데이터로 변경, 원하는 데이터의 링크를 B로 변경
+next.link = data;
+data.link = next;
+
+삭제 :
+
+- 삭제해야할 data가 중간에 있는경우
+now = head.data;
+next = head.link;
+// next가 원하는 data일때까지 이동
+while(next!=data){
+	now = next.data;
+	next = next.link;
+}
+// next에 next.link를 연결해준다.
+next = next.link;
+
+- 삭제해야할 data가 맨 뒤인 경우
+now = head.data;
+next = head.link;
+// next가 원하는 data일때까지 이동
+while(next!=data){
+	now = next.data;
+	next = next.link;
+}
+// next가 삭제해야할 데이터이므로 현재데이터의 링크를 끊는다.
+now.link = null;
+
+2. 연결 리스트와 배열의 차이점을 3가지 이상의 관점에서 서술하세요.
+1) 배열의 경우 size를 늘이거나 줄이기 위해서는 새로운 배열을 생성해야하지만 연결리스트는 이 부분에서 자유롭다. 
+2) 배열은 중간에 추가나 삭제가 어렵지만 연결리스트는 추가와 삭제가 자유롭다.
+3) 
