@@ -36,9 +36,7 @@ public class Main {
 			sb.append("\n");
 			return;
 		}
-		if (idx >= N) {
-			return;
-		}
+
 		for (int i = 0; i < N; i++) {
 			if (!visited[i]) {
 				visited[i] = true;
