@@ -36,15 +36,16 @@ public class Main {
 			sb.append("\n");
 			return;
 		}
-		if (idx >= N) {
-			return;
+
+		int duplicate = 0;
+		for (int i = idx; i < N; i++) {
+			if (!visited[i]&&duplicate!=num[i]) {
+				visited[i] = true;
+				selected[count] = num[i];
+				duplicate = num[i];
+				select(i,count+1);
+				visited[i] = false;
+			}
 		}
-		if (!visited[idx]) {
-			visited[idx] = true;
-			selected[count] = num[idx];
-			select(idx + 1, count + 1);
-			visited[idx] = false;
-		}
-		select(idx + 1, count);
 	}
 }
