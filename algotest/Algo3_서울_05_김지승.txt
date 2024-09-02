@@ -1,0 +1,53 @@
+1. 병합 정렬의 pseudocode 또는 java 코드를 작성하시오.
+import java.util.Arrays;
+
+public class merge {
+	static int[] arr = {3,2,6,8,9,7,1,4,5};
+	static int N = arr.length;
+	static int[] tmp = new int[N];
+	public static void main(String[] args) {
+		mergeSort(0,N-1);
+		System.out.println(Arrays.toString(arr));
+	}
+	public static void mergeSort(int left,int right) {
+		if(left<right) {
+			int mid = (left+right)/2;
+			mergeSort(left,mid);
+			mergeSort(mid+1,right);
+			merge(left,mid,right);
+		}
+	}
+	public static void merge(int left,int mid,int right) {
+		int L = left;
+		int R = mid+1;
+		int idx = left;
+		while(L<=mid && R<=right) {
+			if(arr[L]<=arr[R]) {
+				tmp[idx++]=arr[L++];
+			}
+			else {
+				tmp[idx++]=arr[R++];
+			}
+		}
+		if(L<=mid) {
+			for(int i=L;i<=mid;i++) {
+				tmp[idx++]=arr[i];
+			}
+		}
+		else {
+			for(int i=R;i<=right;i++) {
+				tmp[idx++]=arr[i];
+			}
+		}
+		for(int i=left;i<=right;i++) {
+			arr[i]=tmp[i];
+		}
+	}
+}
+
+
+2. 병합 정렬의 특징을 아는 대로 서술하시오. (시간 복잡도, 공간 복잡도, 다른 정렬과의 비교, 구현상에 있어서의 특징 등)
+다른 정렬 O(N제곱),카운팅정렬 O(N+K), 퀵정렬 O(NlogN)이지만 최악 : O(N제곱)
+병합정렬은 평균 : O(NlogN) 최악 : O(NlogN)이다.
+병합정렬은 안정정렬이다. 안정정렬이란 같은 숫자가 있을 때 그 숫자끼리의 위치가 바뀌지 않는 것이다.
+병합정렬은 tmp배열이 추가적으로 필요하다.
