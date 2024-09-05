@@ -37,6 +37,9 @@ public class Main {
 		}
 		for(int i=0;i<N;i++) {
 			dfs(i,1);
+			if(result) {
+				break;
+			}
 		}
 		if(result) {
 			System.out.println(1);
@@ -48,6 +51,9 @@ public class Main {
 
 	// DFS 함수
 	static void dfs(int V,int count) {
+		if (result) {
+			return;
+		}
 		if(count==5) {
 			result=true;
 			return;
@@ -58,6 +64,6 @@ public class Main {
                 dfs(neighbor,count+1);
             }
         }
-		dfsvisited[V]=false;
+		dfsvisited[V]=false; // 백트래킹
 	}
 }
