@@ -7,6 +7,7 @@ public class Solution {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
+        StringBuilder sb = new StringBuilder();
         
         int T = Integer.parseInt(br.readLine());
         
@@ -22,9 +23,9 @@ public class Solution {
         	}
         	min = Integer.MAX_VALUE;
         	makeTeam(0,0);
-        	System.out.println("#"+tc+" "+(min-B));
+        	sb.append("#").append(tc).append(" ").append(min-B).append("\n");
         }
-        
+        System.out.println(sb);
         
     }
     
@@ -33,6 +34,10 @@ public class Solution {
     		if(sum>=B) {
     			min = Math.min(min, sum);
     		}
+    		return;
+    	}
+    	if(sum>=B) {
+    		min = Math.min(min, sum);
     		return;
     	}
     	makeTeam(idx+1,sum);
