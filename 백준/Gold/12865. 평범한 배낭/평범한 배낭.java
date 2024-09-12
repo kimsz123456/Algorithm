@@ -7,8 +7,8 @@ public class Main {
 		StringTokenizer st;
 
 		st = new StringTokenizer(br.readLine());
-		int N = Integer.parseInt(st.nextToken()); // Number of items
-		int K = Integer.parseInt(st.nextToken()); // Maximum weight capacity
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
 
 		int[] weight = new int[N];
 		int[] value = new int[N];
