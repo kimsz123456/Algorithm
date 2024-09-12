@@ -1,46 +1,40 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Solution {
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
 
-		int T = Integer.parseInt(br.readLine());
+        int T = Integer.parseInt(br.readLine()); // 테스트 케이스 수 입력받기
 
-		for (int tc = 1; tc <= T; tc++) {
-			st = new StringTokenizer(br.readLine());
-			int N = Integer.parseInt(st.nextToken()); // 재료의 수
-			int L = Integer.parseInt(st.nextToken()); // 칼로리 제한
-			
-			int[] score = new int[N];
-			int[] cal = new int[N];
-			for (int i = 0; i < N; i++) {
-				st = new StringTokenizer(br.readLine());
-				score[i] = Integer.parseInt(st.nextToken());
-				cal[i] = Integer.parseInt(st.nextToken());
-			}
-			int[] resultscore = new int[1<<N];
-			int[] resultcal = new int[1<<N];
-			for(int i =0; i<(1 << N);i++) {
-				for(int j = 0 ; j<N; j++) {
-					if((i & (1 << j)) > 0) {
-						resultscore[i]+=score[j];
-						resultcal[i]+=cal[j];
-					}
-				}
-			}
-			
-			int max = 0;
-			for(int i=0;i<(1<<N);i++) {
-				if(resultcal[i]<=L) {
-					max = Math.max(resultscore[i], max);
-				}
-			}
-			System.out.println("#"+tc+" "+max);
-		}
-	}
+        // 각 테스트 케이스마다 처리
+        for (int tc = 1; tc <= T; tc++) {
+            st = new StringTokenizer(br.readLine());
+            int N = Integer.parseInt(st.nextToken()); // 재료의 수
+            int L = Integer.parseInt(st.nextToken()); // 제한 칼로리
+            
+            int[] taste = new int[N];
+            int[] calorie = new int[N];
+            for(int i = 0; i < N; i++) {
+                st = new StringTokenizer(br.readLine());
+                taste[i] = Integer.parseInt(st.nextToken());
+                calorie[i] = Integer.parseInt(st.nextToken());
+            }
+            
+            int[][] dp = new int[N + 1][L + 1]; // i번째 물건까지 고려할거야
+            
+            for(int i = 1; i <= N; i++) {
+                for(int l = 0; l <= L; l++) {
+                    if(calorie[i - 1] <= l) {
+                        dp[i][l] = Math.max(dp[i - 1][l], dp[i - 1][l - calorie[i - 1]] + taste[i - 1]);
+                    } else {
+                        dp[i][l] = dp[i - 1][l];
+                    }
+                }
+            }
+            
+            System.out.println("#"+tc+" "+dp[N][L]);
+        }
+    }
 }
