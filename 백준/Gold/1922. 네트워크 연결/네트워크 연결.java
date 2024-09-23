@@ -17,8 +17,7 @@ public class Main {
 		}
 	}
 	
-	// 대표자
-	static int[] p;
+	static final int INF = Integer.MAX_VALUE;
 	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -27,56 +26,44 @@ public class Main {
 		int V = Integer.parseInt(br.readLine());
 		int E = Integer.parseInt(br.readLine());
 		
-		Edge[] edges = new Edge[E];
+		List<Edge>[] adjList = new ArrayList[V+1];
 		
-		for (int i = 0; i < E; i++) {
-            st = new StringTokenizer(br.readLine());
-            edges[i] = new Edge(Integer.parseInt(st.nextToken()),Integer.parseInt(st.nextToken()),Integer.parseInt(st.nextToken()));
-        }
-		// 1. 정렬
-		Arrays.sort(edges);
-		
-		// 2. V-1개의 간선 뽑기
-		
-		// make set
-		p = new int[V+1];
-		for (int i = 1; i <= V; i++) {
-            p[i]=i;
-        }
-		
-		//
-		int ans = 0;
-		int pick = 0;
-		
-		// union을 하기전에 대표자를 내려보내기
-        for (int i = 0; i < E; i++) {
-            int px = find(edges[i].A);
-            int py = find(edges[i].B);
-            
-            // 사이클 발생하지않도록
-            if (px != py) {
-                union(px, py);
-                ans += edges[i].W;
-                pick++;
-            }
-             
-            // 다 뽑았으면 끝
-            if (pick == (V - 1))
-                break;
-        }
-        
-        System.out.println(ans);
-	}
-	
-	
-	static int find(int x) {
-		if (x != p[x]) {
-			p[x] = find(p[x]);
+		for(int i = 1 ; i<=V; i++) {
+			adjList[i] = new ArrayList<>();
 		}
-		return p[x];
-	}
-	
-	static void union(int x, int y) {
-		p[y] = x;
+		for (int i = 0; i < E; i++) {
+			st = new StringTokenizer(br.readLine());
+			int A = Integer.parseInt(st.nextToken());
+			int B = Integer.parseInt(st.nextToken());
+			int W = Integer.parseInt(st.nextToken());
+			
+			adjList[A].add(new Edge(A,B,W));
+			adjList[B].add(new Edge(B,A,W));
+		}
+		
+		boolean[] visited = new boolean[V+1];
+		
+		PriorityQueue<Edge> pq = new PriorityQueue<>();
+		visited[1] = true;
+
+		int ans = 0;
+		int pick = 1;
+		
+		pq.addAll(adjList[1]);
+		
+		while(pick != V) {
+			Edge e = pq.poll();
+			if(visited[e.B]) continue;
+			
+			ans += e.W;
+			visited[e.B] = true;
+			pick++;
+			
+			pq.addAll(adjList[e.B]);
+		}
+		
+		
+		System.out.println(ans);
+
 	}
 }
