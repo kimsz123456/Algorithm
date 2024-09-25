@@ -1,23 +1,13 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	static int N;
-	static int M;
+	static int N,M;
 	static boolean[][] visited;
 	static int count=0;
+	static int result=0;
 	static int[] dr = {-1,0,1,0};
 	static int[] dc = {0,1,0,-1};
-	static StringBuilder sb = new StringBuilder();
-	static List<Integer> list = new ArrayList<>();
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
@@ -47,44 +37,28 @@ public class Main {
 			}
 		}
 		System.out.println(count);
-		if(list.isEmpty()) {
-			System.out.println(0);
-		}
-		else {
-			Collections.sort(list);
-			System.out.println(list.get(list.size()-1));
-		}
+		System.out.println(result);
 		
-		
-		
-	}
-	static class square {
-		int r, c, area;
-		public square(int r, int c, int area) {
-			this.r=r;
-			this.c=c;
-			this.area=area;
-		}
 	}
 	public static void bfs(int r, int c) {
-		Queue<square> queue = new ArrayDeque<>();
-		queue.offer(new square(r,c,0));
+		Queue<int[]> queue = new ArrayDeque<>();
+		int num=1;
+		queue.offer(new int[] {r,c});
 		visited[r][c]=true;
-		int num = 1;
 		while(!queue.isEmpty()) {
-			square current = queue.poll();
+			int[] current = queue.poll();
 			for(int i=0;i<dr.length;i++) {
-				int nextr=current.r +dr[i];
-				int nextc=current.c +dc[i];
+				int nextr=current[0] +dr[i];
+				int nextc=current[1] +dc[i];
 				if(nextr<0||nextr>=M||nextc<0||nextc>=N||visited[nextr][nextc]) {
 					continue;
 				}
-				int nextarea = num++;
-				queue.add(new square(nextr,nextc,nextarea));
+				queue.add(new int[] {nextr,nextc});
 				visited[nextr][nextc]=true;
+				num++;
 			}
 		}
-		list.add(num);
+		result = Math.max(result, num);
 		count++;
 	}
 }
