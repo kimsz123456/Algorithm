@@ -8,24 +8,20 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
 
-		int N =Integer.parseInt(br.readLine());
+		int N = Integer.parseInt(br.readLine());
 		
-		if(N<5) {
-            if(N==3) System.out.println(1);
-            else System.out.println(-1);
-            return;
-        }
-        int dp[] = new int[N+1];
-        Arrays.fill(dp, 9999);
-        dp[3] = 1;
-        dp[5] = 1;
-        for(int i=6; i<dp.length; i++) {
-            dp[i] = Math.min(dp[i-3]+1, dp[i-5]+1);
-        }
-        if(dp[N] > 9999) {
-            System.out.println(-1);
-        }else {
-            System.out.println(dp[N]);
-        }
-    }
+		
+		int[] sugar = { 3, 5 };
+		int dp[] = new int[N + 1];
+		Arrays.fill(dp, -1);
+		dp[0]=0;
+		for (int i = 0; i < 2; i++) {
+			for (int j = sugar[i]; j <= N; j++) {
+				if (dp[j - sugar[i]] != -1) {
+					dp[j] = dp[j - sugar[i]] + 1;
+				}
+			}
+		}
+		System.out.println(dp[N]);
+	}
 }
