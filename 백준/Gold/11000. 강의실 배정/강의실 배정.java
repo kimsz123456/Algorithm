@@ -28,27 +28,24 @@ public class Main {
 
 		int N = Integer.parseInt(br.readLine());
 		
-		Lecture[] lecture = new Lecture[N];
+		PriorityQueue<Lecture> pq = new PriorityQueue<>();
 		
 		for(int i=0;i<N;i++) {
 			st = new StringTokenizer(br.readLine());
-			lecture[i] = new Lecture (Integer.parseInt(st.nextToken()),Integer.parseInt(st.nextToken()));
+			
+			pq.add(new Lecture(Integer.parseInt(st.nextToken()),Integer.parseInt(st.nextToken())));
 		}
-		// 정렬
-		Arrays.sort(lecture);
 		
-		PriorityQueue<Integer> pq = new PriorityQueue<>();
+		PriorityQueue<Integer> reservation = new PriorityQueue<>();
 		
-		int endTime = 0;
 		
-		for(Lecture next : lecture) {
-			endTime = next.y;
-			if(!pq.isEmpty() && pq.peek() <=next.x) {
-				pq.poll();
+		while(!pq.isEmpty()) {
+			Lecture next = pq.poll();
+			if(!reservation.isEmpty() && reservation.peek() <=next.x) {
+				reservation.poll();
 			}
-			pq.add(endTime);
+			reservation.add(next.y);
 		}
-		
-		System.out.println(pq.size());
+		System.out.println(reservation.size());
 	}
 }
