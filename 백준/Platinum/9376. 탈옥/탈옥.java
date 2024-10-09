@@ -2,25 +2,19 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    private static int h, w;
-    private static char[][] map;
-    private static Node[] prisoners;
-    private static final int[] dx = { 0, 0, -1, 1 };
-    private static final int[] dy = { 1, -1, 0, 0 };
+    static int h, w;
+    static char[][] map;
+    static Node[] prisoners;
+    static int[] dr = { 0, 1, 0, -1 };
+    static int[] dc = { 1, 0, -1, 0 };
     
     static class Node implements Comparable<Node>{
         int x, y, open;
-        Node(int x, int y) {
-            this.x = x;
-            this.y = y;
-            this.open = 0;
-        }
         Node(int x, int y, int open) {
             this.x = x;
             this.y = y;
             this.open = open;
         }
-
         @Override
         public int compareTo(Node o) {
             return Integer.compare(this.open, o.open);
@@ -44,12 +38,12 @@ public class Main {
                 char[] row = br.readLine().toCharArray();
                 for (int j = 0; j < w; j++) {
                     if (row[j] == '$') {
-                        prisoners[prisonersIndex++] = new Node(i + 1, j + 1);
+                        prisoners[prisonersIndex++] = new Node(i + 1, j + 1,0);
                     }
                     map[i+1][j+1] = row[j];
                 }
             }
-            out = bfs(new Node(0,0));
+            out = bfs(new Node(0,0,0));
             prisonerOne = bfs(prisoners[0]);
             prisonerTwo = bfs(prisoners[1]);
             System.out.println(getSum(prisonerOne, prisonerTwo, out));
@@ -67,17 +61,17 @@ public class Main {
         
         while(!queue.isEmpty()) {
             Node current = queue.poll();
-            for (int i = 0; i < 4; i++) {
-                int neighborX = current.x + dx[i];
-                int neighborY = current.y + dy[i];
-                if(neighborX < 0 || neighborX >= h+2 || neighborY < 0 || neighborY >= w+2) continue;
-                if(visited[neighborX][neighborY] != -1 || map[neighborX][neighborY] == '*') continue;
-                if(map[neighborX][neighborY] == '#') {
-                    visited[neighborX][neighborY] = visited[current.x][current.y] + 1;
-                    queue.offer(new Node(neighborX, neighborY, current.open + 1));
+            for (int d = 0; d < 4; d++) {
+                int nextr = current.x + dr[d];
+                int nextc = current.y + dc[d];
+                if(nextr < 0 || nextr >= h+2 || nextc < 0 || nextc >= w+2) continue;
+                if(visited[nextr][nextc] != -1 || map[nextr][nextc] == '*') continue;
+                if(map[nextr][nextc] == '#') {
+                    visited[nextr][nextc] = visited[current.x][current.y] + 1;
+                    queue.offer(new Node(nextr, nextc, current.open + 1));
                 } else {
-                    visited[neighborX][neighborY] = visited[current.x][current.y];
-                    queue.offer(new Node(neighborX, neighborY, current.open));
+                    visited[nextr][nextc] = visited[current.x][current.y];
+                    queue.offer(new Node(nextr, nextc, current.open));
                 }
             }
         }
