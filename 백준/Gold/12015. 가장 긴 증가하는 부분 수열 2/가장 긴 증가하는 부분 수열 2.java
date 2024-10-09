@@ -39,21 +39,21 @@ public class Main {
         	else {
         		int left = 0;
         		int right = length;
-        		int result = 0;
+        		int result = Integer.MAX_VALUE;
         		while(left<=right) {
         			int mid = (left+right)/2;
         			
         			// lis의 바꿀위치값 < 현재값
         			if(lis[mid]<now) {
-        				result = Math.max(left, result);
         				left = mid+1;
         			}
         			// lis의 바꿀위치값 >= 현재값
         			else {
+        				result = Math.min(mid, result);
         				right = mid-1;
         			}
         		}
-        		lis[left]=now;
+        		lis[result]=now;
         	}
         }
         System.out.println(length);
