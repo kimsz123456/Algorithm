@@ -2,11 +2,9 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	static int N,M;
-	static int count=0;
+	static int N,M,max;
 	static int[] dr = {0,1,0,-1,1,1,-1,-1};
 	static int[] dc = {1,0,-1,0,1,-1,1,-1};
-	static Set<String> god;
 	static Map<String,Integer> map;
 	static char[][] world;
 	public static void main(String[] args) throws IOException {
@@ -21,6 +19,9 @@ public class Main {
 		int K = Integer.parseInt(st.nextToken());
 		
 		world = new char[N][M];
+		map = new HashMap<>();
+		
+		String[] stringArray = new String[K];
 		
 		for(int i=0;i<N;i++) {
 			String str = br.readLine();
@@ -29,40 +30,39 @@ public class Main {
 			}
 		}
 		
-		god = new HashSet<>();
-		map = new HashMap<>();
+		
 		for(int i=0;i<K;i++) {
 			String next = br.readLine();
-			god.add(next);
-		}
-		for(String next: god) {
 			map.put(next, 0);
+			stringArray[i]=next;
+			max = Math.max(max, next.length());
 		}
+		
 		for(int i=0;i<N;i++) {
 			for(int j=0;j<M;j++) {
-				DFS(i,j,new StringBuilder().append(world[i][j]));
+				DFS(i,j,""+world[i][j]);
 			}
 		}
-		for(String next: god) {
-			System.out.println(map.get(next));
+		
+		for(String key: stringArray) {
+			sb.append(map.get(key)).append("\n");
 		}
+		
+		System.out.println(sb);
     }
 	
-    static void DFS(int r, int c, StringBuilder word) {
-        if (god.contains(word.toString())) {
-            map.put(word.toString(), map.get(word.toString()) + 1);
-        }
-        
-        if (word.length() > 5) {
-            return;
-        }
-        
-        for (int d = 0; d < 8; d++) {
-            int nextr = (r + dr[d] + N) % N;
-            int nextc = (c + dc[d] + M) % M;
-            word.append(world[nextr][nextc]);
-            DFS(nextr, nextc, word);
-            word.deleteCharAt(word.length() - 1); // 백트래킹
-        }
-    }
+	static void DFS(int r, int c,String word) {
+		if(map.containsKey(word)) {
+			map.put(word, map.get(word) + 1);
+		}
+		
+		if(word.length()==max) {
+			return;
+		}
+		for(int d=0;d<8;d++) {
+			int nextr = (r+dr[d]+N)%N;
+			int nextc = (c+dc[d]+M)%M;
+			DFS(nextr,nextc,word+world[nextr][nextc]); 
+		}
+	}
 }
