@@ -36,7 +36,8 @@ public class Main {
             }
         }
     }
-
+    static StringBuilder sb = new StringBuilder();
+    
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         
@@ -51,6 +52,7 @@ public class Main {
         }
 
         postOrder(root);
+        System.out.println(sb);
     }
 
     static void postOrder(Node node) {
@@ -59,6 +61,6 @@ public class Main {
 
         postOrder(node.left);
         postOrder(node.right);
-        System.out.println(node.num);
+        sb.append(node.num).append("\n");
     }
 }
