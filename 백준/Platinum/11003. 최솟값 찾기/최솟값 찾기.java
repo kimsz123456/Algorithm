@@ -18,7 +18,7 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
         
-        Deque<Integer> dq = new LinkedList<>();
+        Deque<Integer> dq = new ArrayDeque<>();
         
         for (int i = 0; i < N; i++) {
         	// 윈도우 범위 벗어난 값은 제거
@@ -41,4 +41,3 @@ public class Main {
         System.out.println(sb.toString());
     }
 }
-
