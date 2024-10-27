@@ -3,58 +3,62 @@ import java.util.*;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		StringBuilder sb = new StringBuilder();
-		
-		st = new StringTokenizer(br.readLine());
-		int N = Integer.parseInt(st.nextToken());
-		int M = Integer.parseInt(st.nextToken());
-		int K = Integer.parseInt(st.nextToken());
-		
-		List<List<int[]>> adjList = new ArrayList<>(); 
-		
-		for(int i=0;i<=N;i++) {
-			adjList.add(new ArrayList<>());
-		}
-		
-		for(int i=0;i<K;i++) {
-			st = new StringTokenizer(br.readLine());
-			
-			int[] arr = new int[M];
-			for(int j=0;j<M;j++) {
-				int num = Integer.parseInt(st.nextToken());
-				arr[j] = num;
-			}
-			for(int num: arr) {
-				adjList.get(num).add(arr);
-			}
-		}
-		Queue<int[]> queue = new ArrayDeque<>();
-		boolean[] visited = new boolean[N+1];
-		int result = -1;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
 
-		queue.add(new int[] {1,1});
-		visited[1]=true;
-		while(!queue.isEmpty()) {
-			int[] now = queue.poll();
-			int num = now[0];
-			int cnt = now[1];
-			
-			if(num==N) {
-				result=cnt;
-				break;
-			}
-			for(int[] tube : adjList.get(num)) {
-				for(int next: tube) {
-					if(!visited[next]) {
-						queue.add(new int[] {next,cnt+1});
-						visited[next]=true;
-					}
-				}
-			}
-		}
-		System.out.println(result);
-	}
+        st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
+
+        List<List<Integer>> nodeAdjList = new ArrayList<>(); 
+        List<List<Integer>> tubeAdjList = new ArrayList<>();
+
+        for (int i = 0; i <= N; i++) {
+            nodeAdjList.add(new ArrayList<>());
+        }
+        for (int i = 0; i < K; i++) {
+            tubeAdjList.add(new ArrayList<>());
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < M; j++) {
+                int node = Integer.parseInt(st.nextToken());
+                nodeAdjList.get(node).add(i); 
+                tubeAdjList.get(i).add(node); 
+            }
+        }
+
+        Queue<int[]> queue = new ArrayDeque<>();
+        boolean[] visitedNode = new boolean[N + 1];
+        boolean[] visitedTube = new boolean[K];
+        int result = -1;
+
+        queue.add(new int[] {1, 1});
+        visitedNode[1] = true;
+
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+            int node = current[0];
+            int distance = current[1];
+
+            if (node == N) {
+                result = distance;
+                break;
+            }
+
+            for (int tube : nodeAdjList.get(node)) {
+                if (visitedTube[tube]) continue;
+                visitedTube[tube] = true;
+
+                for (int nextNode : tubeAdjList.get(tube)) {
+                    if (!visitedNode[nextNode]) {
+                        queue.add(new int[] {nextNode, distance + 1});
+                        visitedNode[nextNode] = true;
+                    }
+                }
+            }
+        }
+
+        System.out.println(result);
+    }
 }
