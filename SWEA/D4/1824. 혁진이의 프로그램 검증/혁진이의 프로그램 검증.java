@@ -53,11 +53,6 @@ public class Solution {
 				while (!queue.isEmpty()) {
 					Now now = queue.poll();
 					char c = code[now.r][now.c];
-					
-					now = command(now, c);
-					if (arrived) {
-						break;
-					}
 					if (c == '?') {
 						for (int d = 0; d < 4; d++) {
 							int nr = (now.r + dr[d] + R) % R;
@@ -70,6 +65,10 @@ public class Solution {
 						continue;
 					}
 					
+					command(now, c);
+					if (arrived) {
+						break;
+					}
 					int nr = (now.r + dr[now.d] + R) % R;
 					int nc = (now.c + dc[now.d] + C) % C;
 					if (!visited[nr][nc][now.d][now.m]) {
@@ -79,12 +78,12 @@ public class Solution {
 				}
 			}
 			if (arrived) {
-				sb.append("#").append(tc).append(" YES\n");
+				System.out.println("#" + tc + " YES");
+				;
 			} else {
-				sb.append("#").append(tc).append(" NO\n");
+				System.out.println("#" + tc + " NO");
 			}
 		}
-		System.out.print(sb);
 	}
 
 	static Now command(Now now, char c) {
@@ -105,10 +104,18 @@ public class Solution {
 				now.d = 1;
 				break;
 			case '_':
-				now.d = (now.m == 0) ? 0 : 2;
+				if (now.m == 0) {
+					now.d = 0;
+				} else {
+					now.d = 2;
+				}
 				break;
 			case '|':
-				now.d = (now.m == 0) ? 1 : 3;
+				if (now.m == 0) {
+					now.d = 1;
+				} else {
+					now.d = 3;
+				}
 				break;
 			case '.':
 				break;
