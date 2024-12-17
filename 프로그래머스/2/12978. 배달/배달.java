@@ -46,6 +46,7 @@ class Solution {
 			int[] cur = pq.poll();
 			
 			if(visited[cur[0]]) continue;
+            if(dist[cur[0]]>k) continue;
 			visited[cur[0]]= true;
 			
 			for(int[] edge : adj[cur[0]]) {
