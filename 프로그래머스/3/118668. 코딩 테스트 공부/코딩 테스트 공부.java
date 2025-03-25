@@ -48,7 +48,7 @@ class Solution {
                     else if(j+p[3]>maxCop){
                         dp[i+p[2]][maxCop]=Math.min(dp[i+p[2]][maxCop],dp[i][j]+p[4]);
                     }
-                    else if(i+p[2]<=maxCop&&j+p[3]<=maxCop){
+                    else if(i+p[2]<=maxAlp&&j+p[3]<=maxCop){
                        dp[i+p[2]][j+p[3]]=Math.min(dp[i+p[2]][j+p[3]],dp[i][j]+p[4]); 
                     }
                 }
