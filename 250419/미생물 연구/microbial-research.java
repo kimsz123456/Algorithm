@@ -19,20 +19,21 @@ public class Main {
         }
 
         public void adjust(){
-            int minR = Integer.MAX_VALUE;
+        	Set<int[]> newCells = new HashSet<>();
+        	if(this.area==1) {
+            	newCells.add(new int[] {0,0});
+            	this.cells=newCells;
+            	return;
+            }
+        	int minR = Integer.MAX_VALUE;
             int minC = Integer.MAX_VALUE;
             for(int[] cell: cells){
                 minR = Math.min(cell[0],minR);
                 minC = Math.min(cell[1],minC);
             }
 
-            Set<int[]> newCells = new HashSet<>();
 
             if(minR==0 && minC==0) return;
-            if(this.area==1) {
-            	newCells.add(new int[] {0,0});
-            	return;
-            }
             
             if(minR>0){
                 for(int[] cell:cells){
@@ -154,11 +155,11 @@ public class Main {
 
         while (!pq.isEmpty()) {
             CellGroup cg = pq.poll();
-
+            group[cg.num].adjust();
             flag:
             for (int j = 0; j < N; j++) {
                 for (int i = 0; i < N; i++) {
-                    if (canMove(i, j, cg.num)) {
+                    if(canMove(i, j, cg.num)) {
                         for (int[] cell : group[cg.num].cells) {
                             int r = i + cell[0];
                             int c = j + cell[1];
@@ -247,7 +248,7 @@ public class Main {
     }
 
     static boolean canMove(int i, int j, int num) {
-        group[num].adjust();
+        
         for (int[] cell : group[num].cells) {
             int r = cell[0];
             int c = cell[1];
