@@ -62,7 +62,6 @@ public class Main {
             // 3. 실험 결과 기록
             report(i);
 
-            debug();
         }
     }
 
