@@ -20,11 +20,6 @@ public class Main {
 
         public void adjust() {
             Set<int[]> newCells = new HashSet<>();
-            if(this.area==1) {
-                newCells.add(new int[] {0,0});
-                this.cells=newCells;
-                return;
-            }
             
             int minR = Integer.MAX_VALUE;
             int minC = Integer.MAX_VALUE;
