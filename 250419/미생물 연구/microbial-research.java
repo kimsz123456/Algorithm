@@ -155,11 +155,11 @@ public class Main {
             for (int j = 0; j < N; j++) {
                 if (map[N-i-1][j] == 0) continue;
                 for (int d = 0; d < 4; d++) {
-                    int ni = i + dr[d];
+                    int ni = N-i-1 + dr[d];
                     int nj = j + dc[d];
                     if (boundary(ni, nj) && map[ni][nj] != 0) {
-                        if (map[i][j] != map[ni][nj]) {
-                            int idA = map[i][j];
+                        if (map[N-i-1][j] != map[ni][nj]) {
+                            int idA = map[N-i-1][j];
                             int idB = map[ni][nj];
                             adjacent[idA][idB] = true;
                             adjacent[idB][idA] = true;
@@ -177,7 +177,6 @@ public class Main {
                 }
             }
         }
-        // 계산된 실험 점수를 출력합니다.
         System.out.println(score);
     }
 
