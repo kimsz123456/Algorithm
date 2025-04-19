@@ -2,8 +2,20 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    static int N,Q;
 
+    static class CellGroup {
+        int area;
+        List<int[]> cells;
+
+        CellGroup(int area,List<int[]> cells){
+            this.area = area;
+            this.cells = cells;
+        }
+    }
+
+    static int N,Q;
+    static int[] info;
+    static int[][] map;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -13,18 +25,45 @@ public class Main {
         N = stoi(st.nextToken());
         Q = stoi(st.nextToken());
 
-        int r1,c1,r2,c2;
+        map = new int[N][N];
+        info = new int[Q][4];
+
         for(int i=1;i<=Q;i++){
             st = new StringTokenizer(br.readLine());
-            r1 = stoi(st.nextToken());
-            r1 = stoi(st.nextToken());
-            simulate();
+            for(int j=0;j<4;j++){
+                info[i-1][j] = stoi(st.nextToken());
+            }
+            simulate(i);
         }
+    }
+
+    static void simulate(int turn){
+        // 1. 미생물 투입
+        input(turn);
+        
+        // 2. 배양 용기 이동
+        move();
+
+        // 3. 실험 결과 기록
+        report();
 
     }
 
-    static void simulate(){
-        
+    // 1. 미생물 투입
+    static void input(int turn){
+        int r1 = info[turn-1][0];
+        int r1 = info[turn-1][0];
+
+    }
+
+    // 2. 배양 용기 이동
+    static void move(){
+
+    }
+
+    // 3. 실험 결과 기록
+    static void report(){
+
     }
 
     static int stoi(String str){
