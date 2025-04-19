@@ -18,32 +18,26 @@ public class Main {
             this.cells = cells;
         }
 
-        public void adjust(){
-        	Set<int[]> newCells = new HashSet<>();
-        	if(this.area==1) {
-            	newCells.add(new int[] {0,0});
-            	this.cells=newCells;
-            	return;
+        public void adjust() {
+            Set<int[]> newCells = new HashSet<>();
+            if(this.area==1) {
+                newCells.add(new int[] {0,0});
+                this.cells=newCells;
+                return;
             }
-        	int minR = Integer.MAX_VALUE;
+            
+            int minR = Integer.MAX_VALUE;
             int minC = Integer.MAX_VALUE;
-            for(int[] cell: cells){
-                minR = Math.min(cell[0],minR);
-                minC = Math.min(cell[1],minC);
+            for(int[] cell: cells) {
+                minR = Math.min(cell[0], minR);
+                minC = Math.min(cell[1], minC);
             }
-
 
             if(minR==0 && minC==0) return;
             
-            if(minR>0){
-                for(int[] cell:cells){
-                    newCells.add(new int[] {cell[0]-minR,cell[1]});
-                }
-            }
-            if(minC>0){
-                for(int[] cell:cells){
-                    newCells.add(new int[] {cell[0],cell[1]-minC});
-                }
+            // 한 번에 행과 열 모두 조정
+            for(int[] cell: cells) {
+                newCells.add(new int[] {cell[0]-minR, cell[1]-minC});
             }
 
             this.cells = newCells;
@@ -92,6 +86,7 @@ public class Main {
 
             // 3. 실험 결과 기록
             report(i);
+            
         }
     }
 
