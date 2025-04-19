@@ -20,7 +20,10 @@ public class Main {
 
         @Override
         public int compareTo(CellGroup other){
-            return -Integer.compare(this.area,other.area);
+            if(this.area!=other.area){
+                return -Integer.compare(this.area,other.area);
+            }
+            return Integer.compare(this.num,other.num);
         }
     }
 
@@ -59,6 +62,7 @@ public class Main {
             // 3. 실험 결과 기록
             report(i);
 
+            debug();
         }
     }
 
