@@ -18,6 +18,32 @@ public class Main {
             this.cells = cells;
         }
 
+        public void adjust(){
+            int minR = Integer.MAX_VALUE;
+            int minC = Integer.MAX_VALUE;
+            for(int[] cell: cells){
+                minR = Math.min(cell[0],minR);
+                minC = Math.min(cell[1],minC);
+            }
+
+            Set<int[]> newCells = new HashSet<>();
+
+            if(minR==0 && minC==0) return;
+            
+            if(minR>0){
+                for(int[] cell:cells){
+                    newCells.add(new int[] {cell[0]-minR,cell[1]});
+                }
+            }
+            if(minC>0){
+                for(int[] cell:cells){
+                    newCells.add(new int[] {cell[0],cell[1]-minC});
+                }
+            }
+
+            this.cells = newCells;
+        }
+
         @Override
         public int compareTo(CellGroup other){
             if(this.area!=other.area){
@@ -61,7 +87,7 @@ public class Main {
 
             // 3. 실험 결과 기록
             report(i);
-
+            
         }
     }
 
@@ -94,7 +120,8 @@ public class Main {
                     int biasR = group[cur].biasR;
                     int biasC = group[cur].biasC;
                     group[cur].area--;
-                    group[cur].cells.removeIf(cell -> cell[0]+biasR == b && cell[1]+biasC == a);
+                    group[cur].cells.removeIf(cell-> cell[0]== b-biasR && cell[1] == a-biasC);
+
                     checkList.add(cur);
                 }
                 map[N-i-1][j]=turn;
@@ -217,6 +244,7 @@ public class Main {
     }
 
     static boolean canMove(int i, int j, int num) {
+        group[num].adjust();
         for (int[] cell : group[num].cells) {
             int r = cell[0];
             int c = cell[1];
