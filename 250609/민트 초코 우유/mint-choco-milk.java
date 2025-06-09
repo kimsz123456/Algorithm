@@ -2,29 +2,41 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
+    static int N, T;
+    static int[][] foodGrid;  // 음식 신념 (비트마스크)
+    static int[][] faithGrid; // 신앙심
+    static int[] dr = {-1, 1, 0, 0};
+    static int[] dc = {0, 0, -1, 1};
+    static List<Leader> leaders;
+    static boolean[][] visited;
+    static boolean[][] defended;
+    static StringBuilder sb = new StringBuilder();
 
-    static class Group {
-        int num,type;
-
-        Group(int num, int type){
-            this.num = num;
-            this.type = type;
-        }
-
-        @Override
-        public String toString(){
-            return num+"&"+type;
+    static class Leader {
+        int basicFoodCount;
+        int faith;
+        int row, col;
+        
+        Leader(int basicFoodCount, int faith, int row, int col) {
+            this.basicFoodCount = basicFoodCount;
+            this.faith = faith;
+            this.row = row;
+            this.col = col;
         }
     }
     
-    static int N,T;
-    static Group[][] map;
-    static int[] dr = {-1,1,0,0};
-    static int[] dc = {0,0,-1,1};
-    static List<int[]> leaders;
-    static StringBuilder sb = new StringBuilder();
+    static class GroupMember {
+        int faith;
+        int row, col;
+        
+        GroupMember(int faith, int row, int col) {
+            this.faith = faith;
+            this.row = row;
+            this.col = col;
+        }
+    }
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
@@ -32,38 +44,44 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         T = Integer.parseInt(st.nextToken());
 
-        char[][] charMap = new char[N][N];
-        int[][] intMap = new int[N][N];
+        // 1-based indexing 사용
+        char[][] charMap = new char[N + 1][N + 1];
+        int[][] intMap = new int[N + 1][N + 1];
+        foodGrid = new int[N + 1][N + 1];
+        faithGrid = new int[N + 1][N + 1];
+        visited = new boolean[N + 1][N + 1];
+        defended = new boolean[N + 1][N + 1];
 
-        for(int i=0;i<N;i++){
+        for (int i = 1; i <= N; i++) {
             String str = br.readLine();
-            charMap[i] = str.toCharArray();
+            for (int j = 1; j <= N; j++) {
+                charMap[i][j] = str.charAt(j - 1);
+            }
         }
 
-        for(int i=0;i<N;i++){
+        for (int i = 1; i <= N; i++) {
             st = new StringTokenizer(br.readLine());
-            for(int j=0;j<N;j++){
+            for (int j = 1; j <= N; j++) {
                 intMap[i][j] = Integer.parseInt(st.nextToken());
             }
         }
 
-        map = new Group[N][N];
-        for(int i=0;i<N;i++){
-            for(int j=0;j<N;j++){
+        // 음식 신념을 비트마스크로 변환
+        for (int i = 1; i <= N; i++) {
+            for (int j = 1; j <= N; j++) {
                 char food = charMap[i][j];
-                if(food=='T'){
-                    map[i][j] = new Group(intMap[i][j],1);
+                if (food == 'T') {
+                    foodGrid[i][j] = 1; // 민트
+                } else if (food == 'C') {
+                    foodGrid[i][j] = 2; // 초코
+                } else {
+                    foodGrid[i][j] = 4; // 우유
                 }
-                else if(food=='C'){
-                    map[i][j] = new Group(intMap[i][j],2);
-                }
-                else{
-                    map[i][j] = new Group(intMap[i][j],4);
-                }
+                faithGrid[i][j] = intMap[i][j];
             }
         }
 
-        for(int day=1;day<=T;day++){
+        for (int day = 1; day <= T; day++) {
             brunch();
             dinner();
             observe();
@@ -74,160 +92,152 @@ public class Main {
     public static void brunch() {
         leaders = new ArrayList<>();
         
-        Queue<int[]> q = new ArrayDeque<>();
-        boolean[][] visited = new boolean[N][N];
+        // visited 배열 초기화
+        for (int i = 1; i <= N; i++) {
+            for (int j = 1; j <= N; j++) {
+                visited[i][j] = false;
+            }
+        }
         
-        for(int i=0;i<N;i++){
-            for(int j=0;j<N;j++){
-                if(!visited[i][j]){
-                    int t = map[i][j].type;
-                    int cnt = 0;
-                    List<int[]> groupMembers = new ArrayList<>();
-
-                    q.add(new int[] {i,j});
-                    visited[i][j]=true;
-                    while(!q.isEmpty()){
-                        int[] cur = q.poll();
-                        int r = cur[0];
-                        int c = cur[1];
-                        cnt++;
-                        groupMembers.add(new int[]{r, c});
-
-                        for(int d=0;d<4;d++){
-                            int nr = r+dr[d];
-                            int nc = c+dc[d];
-                            if(boundaryCheck(nr,nc) && !visited[nr][nc] && map[nr][nc].type==t){
-                                q.add(new int[] {nr,nc});
-                                visited[nr][nc]=true;
-                            }
-                        }
-                    }
+        for (int i = 1; i <= N; i++) {
+            for (int j = 1; j <= N; j++) {
+                if (!visited[i][j]) {
+                    int targetFood = foodGrid[i][j];
+                    List<GroupMember> groupMembers = new ArrayList<>();
+                    int groupSize = dfsGroup(i, j, targetFood, groupMembers);
                     
                     // 그룹 멤버들을 정렬하여 대표자 선택
                     groupMembers.sort((a, b) -> {
-                        int faith1 = map[a[0]][a[1]].num;
-                        int faith2 = map[b[0]][b[1]].num;
-                        if (faith1 != faith2) return faith2 - faith1; // 신앙심 내림차순
-                        if (a[0] != b[0]) return a[0] - b[0]; // 행 오름차순
-                        return a[1] - b[1]; // 열 오름차순
+                        if (a.faith != b.faith) return b.faith - a.faith; // 신앙심 내림차순
+                        if (a.row != b.row) return a.row - b.row; // 행 오름차순
+                        return a.col - b.col; // 열 오름차순
                     });
                     
-                    int[] maxPos = groupMembers.get(0);
-                    leaders.add(maxPos);
-                    map[maxPos[0]][maxPos[1]].num += cnt;
+                    GroupMember leader = groupMembers.get(0);
+                    faithGrid[leader.row][leader.col] += groupSize;
+                    
+                    int basicFoodCount = countBasicFoods(foodGrid[leader.row][leader.col]);
+                    leaders.add(new Leader(basicFoodCount, faithGrid[leader.row][leader.col], 
+                                         leader.row, leader.col));
                 }
             }
         }
     }
+    
+    public static int dfsGroup(int row, int col, int targetFood, List<GroupMember> groupMembers) {
+        visited[row][col] = true;
+        groupMembers.add(new GroupMember(faithGrid[row][col], row, col));
+        int size = 1;
+        
+        for (int d = 0; d < 4; d++) {
+            int nr = row + dr[d];
+            int nc = col + dc[d];
+            if (boundaryCheck(nr, nc) && !visited[nr][nc] && foodGrid[nr][nc] == targetFood) {
+                size += dfsGroup(nr, nc, targetFood, groupMembers);
+            }
+        }
+        return size;
+    }
+    
+    public static int countBasicFoods(int foodValue) {
+        int count = 0;
+        if ((foodValue & 1) != 0) count++; // 민트
+        if ((foodValue & 2) != 0) count++; // 초코
+        if ((foodValue & 4) != 0) count++; // 우유
+        return count;
+    }
 
     public static void dinner() {
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> {
-        int r1 = a[0], c1 = a[1];
-        int r2 = b[0], c2 = b[1];
-        Group g1 = map[r1][c1];
-        Group g2 = map[r2][c2];
-        
-        // 1. 그룹 타입 우선순위 (비트 개수로 판단: 단일 < 이중 < 삼중)
-        int bitCount1 = Integer.bitCount(g1.type);
-        int bitCount2 = Integer.bitCount(g2.type);
-        if (bitCount1 != bitCount2) {
-            return Integer.compare(bitCount1, bitCount2);
+        // defended 배열 초기화
+        for (int i = 1; i <= N; i++) {
+            for (int j = 1; j <= N; j++) {
+                defended[i][j] = false;
+            }
         }
         
-        // 2. 신앙값이 큰 순서 (내림차순)
-        if (g1.num != g2.num) {
-            return Integer.compare(g2.num, g1.num);
-        }
-        
-        // 3. 행 번호가 작은 순서 (오름차순)
-        if (r1 != r2) {
-            return Integer.compare(r1, r2);
-        }
-        
-        // 4. 열 번호가 작은 순서 (오름차순)
-        return Integer.compare(c1, c2);
-    });
-    
-        // leaders의 모든 좌표를 PriorityQueue에 추가
-        for (int[] pos : leaders) {
-            pq.add(pos);
-        }
+        // 리더들을 정렬
+        leaders.sort((a, b) -> {
+            if (a.basicFoodCount != b.basicFoodCount) {
+                return a.basicFoodCount - b.basicFoodCount; // 기본 음식 개수 오름차순
+            }
+            if (a.faith != b.faith) {
+                return b.faith - a.faith; // 신앙심 내림차순
+            }
+            if (a.row != b.row) {
+                return a.row - b.row; // 행 오름차순
+            }
+            return a.col - b.col; // 열 오름차순
+        });
 
-        boolean[][] defended = new boolean[N][N];
-
-        while (!pq.isEmpty()) {
-            int[] pos = pq.poll();
-            int r = pos[0], c = pos[1];
-
-            if (defended[r][c]) continue;
-
-            int original = map[r][c].num;
-            int dir = original % 4;
-            int power = map[r][c].num - 1;
-            map[r][c].num = 1;
-            int curType = map[r][c].type;
-
-            int nr = r;
-            int nc = c;
+        for (Leader leader : leaders) {
+            int leaderRow = leader.row;
+            int leaderCol = leader.col;
             
-            // 현재 위치에서 시작해서 한 방향으로 쭉 전파
+            if (defended[leaderRow][leaderCol]) continue;
+
+            int propagationDir = faithGrid[leaderRow][leaderCol] % 4;
+            int remainingPower = faithGrid[leaderRow][leaderCol] - 1;
+            faithGrid[leaderRow][leaderCol] = 1;
+            int leaderFood = foodGrid[leaderRow][leaderCol];
+            
+            int currentRow = leaderRow;
+            int currentCol = leaderCol;
+            
             while (true) {
-                nr += dr[dir];
-                nc += dc[dir];
+                currentRow += dr[propagationDir];
+                currentCol += dc[propagationDir];
                 
-                // 경계 체크
-                if (!boundaryCheck(nr, nc)) {
+                if (!boundaryCheck(currentRow, currentCol)) {
                     break;
                 }
                 
                 // 음식이 같으면 계속 진행
-                if (curType == map[nr][nc].type) {
+                if (foodGrid[currentRow][currentCol] == leaderFood) {
                     continue;
                 }
 
-                if (power > map[nr][nc].num) {
+                int targetFaith = faithGrid[currentRow][currentCol];
+                
+                if (remainingPower > targetFaith) {
                     // 강한 전파
-                    power -= (map[nr][nc].num + 1);
-                    map[nr][nc].num += 1;
-                    map[nr][nc].type = curType;
-                    defended[nr][nc] = true;
-                    // continue 대신 그대로 계속 진행
+                    faithGrid[currentRow][currentCol] += 1;
+                    remainingPower -= (targetFaith + 1);
+                    foodGrid[currentRow][currentCol] = leaderFood;
+                    defended[currentRow][currentCol] = true;
                 } else {
                     // 약한 전파
-                    map[nr][nc].type = map[nr][nc].type | curType;
-                    map[nr][nc].num += power;
-                    power = 0;
-                    defended[nr][nc] = true;
+                    faithGrid[currentRow][currentCol] += remainingPower;
+                    foodGrid[currentRow][currentCol] |= leaderFood;
+                    remainingPower = 0;
+                    defended[currentRow][currentCol] = true;
                 }
                 
-                if (power == 0) break;
+                if (remainingPower == 0) break;
             }
         }
     }
 
     public static void observe() {
-        int[] answer = new int[7];
-        for(int i=0;i<N;i++){
-            for(int j=0;j<N;j++){
-                int type = map[i][j].type;
-                switch(type) {
-                    case 7: answer[0] += map[i][j].num; break;
-                    case 3: answer[1] += map[i][j].num; break;
-                    case 5: answer[2] += map[i][j].num; break;
-                    case 6: answer[3] += map[i][j].num; break;
-                    case 4: answer[4] += map[i][j].num; break;
-                    case 2: answer[5] += map[i][j].num; break;
-                    case 1: answer[6] += map[i][j].num; break;
-                }
+        int[] answer = new int[8]; // 인덱스 1~7 사용
+        
+        for (int i = 1; i <= N; i++) {
+            for (int j = 1; j <= N; j++) {
+                int type = foodGrid[i][j];
+                answer[type] += faithGrid[i][j];
             }
         }
-        for(int i=0;i<7;i++){
-            sb.append(answer[i]).append(" ");
-        }
-        sb.append("\n");
+        
+        // 출력 순서: 민트초코우유(7), 민트초코(3), 민트우유(5), 초코우유(6), 우유(4), 초코(2), 민트(1)
+        sb.append(answer[7]).append(" ");
+        sb.append(answer[3]).append(" ");
+        sb.append(answer[5]).append(" ");
+        sb.append(answer[6]).append(" ");
+        sb.append(answer[4]).append(" ");
+        sb.append(answer[2]).append(" ");
+        sb.append(answer[1]).append("\n");
     }
 
-    public static boolean boundaryCheck(int r, int c){
-        return r>=0 && r<N && c>=0 && c<N;
+    public static boolean boundaryCheck(int r, int c) {
+        return r >= 1 && r <= N && c >= 1 && c <= N;
     }
 }
