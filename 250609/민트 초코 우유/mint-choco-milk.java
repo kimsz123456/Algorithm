@@ -156,26 +156,29 @@ public class Main {
             pq.add(pos);
         }
 
-        Set<String> propagated = new HashSet<>();
+        boolean[][] defended = new boolean[N][N];
 
         while (!pq.isEmpty()) {
             int[] pos = pq.poll();
             int r = pos[0], c = pos[1];
 
-            String key = r + "," + c;
-            if (propagated.contains(key)) {
-                continue;
-            }
+            if (defended[r][c]) continue;
+
+            int original = map[r][c].num;
+            int dir = original%4;
 
             int power = map[r][c].num-1;
-            int curType = map[r][c].type;
             map[r][c].num = 1;
-            int dir = (power+1)%4;
+
+            int curType = map[r][c].type;
+
+            int nr = r;
+            int nc = c;
             
             // 현재 위치에서 시작해서 한 방향으로 쭉 전파
             while (true) {
-                int nr = r + dr[dir];
-                int nc = c + dc[dir];
+                nr += dr[dir];
+                nc += dc[dir];
                 
                 // 경계 체크
                 if (!boundaryCheck(nr, nc)) {
@@ -184,19 +187,15 @@ public class Main {
                 
                 // 음식이 같으면 계속 진행
                 if (curType == map[nr][nc].type) {
-                    r = nr;
-                    c = nc;
                     continue;
                 }
 
-                propagated.add(nr + "," + nc);
+                defended[nr][nc]=true;
                 
                 if (power > map[nr][nc].num) {
                     power -= (map[nr][nc].num+1);
                     map[nr][nc].num++;
                     map[nr][nc].type = curType;
-                    r = nr;
-                    c = nc;
                     continue;
                 } 
                 else {
