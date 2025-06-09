@@ -72,7 +72,6 @@ public class Main {
     }
 
     public static void brunch() {
-
         leaders = new ArrayList<>();
         
         Queue<int[]> q = new ArrayDeque<>();
@@ -83,8 +82,7 @@ public class Main {
                 if(!visited[i][j]){
                     int t = map[i][j].type;
                     int cnt = 0;
-                    int max = map[i][j].num;
-                    int[] maxPos = {i,j};
+                    List<int[]> groupMembers = new ArrayList<>();
 
                     q.add(new int[] {i,j});
                     visited[i][j]=true;
@@ -93,19 +91,7 @@ public class Main {
                         int r = cur[0];
                         int c = cur[1];
                         cnt++;
-
-                        if(map[r][c].num>max){
-                            max = map[r][c].num;
-                            maxPos = new int[] {r,c};
-                        }
-                        if(map[r][c].num==max){
-                            if(maxPos[0]>r){
-                                maxPos = new int[] {r,c};
-                            }
-                            if(maxPos[0]==r && maxPos[1]>c){
-                                maxPos = new int[] {r,c};
-                            }
-                        }
+                        groupMembers.add(new int[]{r, c});
 
                         for(int d=0;d<4;d++){
                             int nr = r+dr[d];
@@ -116,6 +102,17 @@ public class Main {
                             }
                         }
                     }
+                    
+                    // 그룹 멤버들을 정렬하여 대표자 선택
+                    groupMembers.sort((a, b) -> {
+                        int faith1 = map[a[0]][a[1]].num;
+                        int faith2 = map[b[0]][b[1]].num;
+                        if (faith1 != faith2) return faith2 - faith1; // 신앙심 내림차순
+                        if (a[0] != b[0]) return a[0] - b[0]; // 행 오름차순
+                        return a[1] - b[1]; // 열 오름차순
+                    });
+                    
+                    int[] maxPos = groupMembers.get(0);
                     leaders.add(maxPos);
                     map[maxPos[0]][maxPos[1]].num += cnt;
                 }
@@ -165,11 +162,9 @@ public class Main {
             if (defended[r][c]) continue;
 
             int original = map[r][c].num;
-            int dir = original%4;
-
-            int power = map[r][c].num-1;
+            int dir = original % 4;
+            int power = map[r][c].num - 1;
             map[r][c].num = 1;
-
             int curType = map[r][c].type;
 
             int nr = r;
@@ -191,18 +186,21 @@ public class Main {
                 }
 
                 if (power > map[nr][nc].num) {
-                    power -= (map[nr][nc].num+1);
-                    map[nr][nc].num++;
+                    // 강한 전파
+                    power -= (map[nr][nc].num + 1);
+                    map[nr][nc].num += 1;
                     map[nr][nc].type = curType;
-                    defended[nr][nc]=true;
-                    continue;
-                } 
-                else {
+                    defended[nr][nc] = true;
+                    // continue 대신 그대로 계속 진행
+                } else {
+                    // 약한 전파
                     map[nr][nc].type = map[nr][nc].type | curType;
                     map[nr][nc].num += power;
-                    defended[nr][nc]=true;
-                    break;
+                    power = 0;
+                    defended[nr][nc] = true;
                 }
+                
+                if (power == 0) break;
             }
         }
     }
@@ -231,12 +229,5 @@ public class Main {
 
     public static boolean boundaryCheck(int r, int c){
         return r>=0 && r<N && c>=0 && c<N;
-    }
-
-    public static void debug() {
-        for(int i=0;i<N;i++){
-            System.out.println(Arrays.toString(map[i]));
-        }
-        System.out.println("-------------------------");
     }
 }
