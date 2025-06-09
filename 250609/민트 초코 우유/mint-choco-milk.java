@@ -190,17 +190,17 @@ public class Main {
                     continue;
                 }
 
-                defended[nr][nc]=true;
-                
                 if (power > map[nr][nc].num) {
                     power -= (map[nr][nc].num+1);
                     map[nr][nc].num++;
                     map[nr][nc].type = curType;
+                    defended[nr][nc]=true;
                     continue;
                 } 
                 else {
                     map[nr][nc].type = map[nr][nc].type | curType;
                     map[nr][nc].num += power;
+                    defended[nr][nc]=true;
                     break;
                 }
             }
