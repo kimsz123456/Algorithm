@@ -167,10 +167,10 @@ public class Main {
                 continue;
             }
 
-            int curNum = map[r][c].num-1;
+            int power = map[r][c].num-1;
             int curType = map[r][c].type;
             map[r][c].num = 1;
-            int dir = (curNum+1)%4;
+            int dir = (power+1)%4;
             
             // 현재 위치에서 시작해서 한 방향으로 쭉 전파
             while (true) {
@@ -191,8 +191,8 @@ public class Main {
 
                 propagated.add(nr + "," + nc);
                 
-                if (curNum > map[nr][nc].num) {
-                    curNum -= (map[nr][nc].num+1);
+                if (power > map[nr][nc].num) {
+                    power -= (map[nr][nc].num+1);
                     map[nr][nc].num++;
                     map[nr][nc].type = curType;
                     r = nr;
@@ -201,7 +201,7 @@ public class Main {
                 } 
                 else {
                     map[nr][nc].type = map[nr][nc].type | curType;
-                    map[nr][nc].num += curNum;
+                    map[nr][nc].num += power;
                     break;
                 }
             }
@@ -213,26 +213,14 @@ public class Main {
         for(int i=0;i<N;i++){
             for(int j=0;j<N;j++){
                 int type = map[i][j].type;
-                if(type==7){
-                    answer[0] += map[i][j].num;
-                }
-                else if(type==6){
-                    answer[3] += map[i][j].num;
-                }
-                else if(type==5){
-                    answer[2] += map[i][j].num;
-                }
-                else if(type==4){
-                    answer[4] += map[i][j].num;
-                }
-                else if(type==3){
-                    answer[1] += map[i][j].num;
-                }
-                else if(type==2){
-                    answer[5] += map[i][j].num;
-                }
-                else {
-                    answer[6] += map[i][j].num;
+                switch(type) {
+                    case 7: answer[0] += map[i][j].num; break;
+                    case 3: answer[1] += map[i][j].num; break;
+                    case 5: answer[2] += map[i][j].num; break;
+                    case 6: answer[3] += map[i][j].num; break;
+                    case 4: answer[4] += map[i][j].num; break;
+                    case 2: answer[5] += map[i][j].num; break;
+                    case 1: answer[6] += map[i][j].num; break;
                 }
             }
         }
