@@ -38,12 +38,10 @@ public class Main {
     }
 
     public static int find(int a){
-        if(set[a]==a) {
-            return a;
+        if(set[a]!=a) {
+            set[a]=find(set[a]);
         }
-        else {
-            return find(set[a]);
-        }
+        return set[a];
     }
 
     public static void check(int a,int b){
