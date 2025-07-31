@@ -9,12 +9,7 @@ public class Main {
         
         int N = stoi(br.readLine());
         
-        if(N%2==0) {
-        	sb.append("CY");
-        }
-        else {
-        	sb.append("SK");
-        }
+        sb.append((N&1)==0?"CY":"SK");
         System.out.print(sb);
     }
     
