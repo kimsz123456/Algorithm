@@ -3,18 +3,15 @@ import java.io.*;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb = new StringBuilder();
-		StringTokenizer st;
 		
-		int N = stoi(br.readLine());
+		int N = nextInt();
 		List<Integer> odd = new ArrayList<>();
 		List<Integer> even = new ArrayList<>();
 		
 		for(int i=1;i<=N;i++) {
-			st = new StringTokenizer(br.readLine());
-			int x = Integer.parseInt(st.nextToken());
-			int y = Integer.parseInt(st.nextToken());
+			int x = nextInt();
+			int y = nextInt();
 			if((x+y)%2==0) even.add(i); 
 			else odd.add(i);
 		}
@@ -35,8 +32,13 @@ public class Main {
             System.out.print(sb);
         }
 	}
-
-	public static int stoi(String str) {
-		return Integer.parseInt(str);
-	}
+	static int nextInt() throws IOException {
+        int c;
+        while (!Character.isDigit(c = System.in.read()));
+        int value = c & 15;
+        while (Character.isDigit(c = System.in.read())) {
+            value = value * 10 + (c & 15);
+        }
+        return value;
+    }
 }
