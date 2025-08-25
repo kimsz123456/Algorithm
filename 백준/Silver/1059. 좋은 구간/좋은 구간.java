@@ -4,22 +4,19 @@ import java.util.*;
 class Main {
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
 
-		int L = Integer.parseInt(br.readLine());
+		int L = nextInt();
 
 		int high = 1000;
 		int low = 0;
 
-		st = new StringTokenizer(br.readLine());
 
 		int[] arr = new int[L];
 		for (int i = 0; i < L; i++) {
-			arr[i] = Integer.parseInt(st.nextToken());
+			arr[i] = nextInt();
 		}
 
-		int n = Integer.parseInt(br.readLine());
+		int n = nextInt();
 
 		for (int i = 0; i < L; i++) {
 			int num = arr[i];
@@ -41,5 +38,13 @@ class Main {
 		}
 		System.out.println((result - 1));
 	}
-
+	static int nextInt() throws IOException {
+        int c;
+        while (!Character.isDigit(c = System.in.read()));
+        int value = c & 15;
+        while (Character.isDigit(c = System.in.read())) {
+            value = value * 10 + (c & 15);
+        }
+        return value;
+    }
 }
