@@ -3,14 +3,17 @@ import java.util.*;
 
 class Main {
 	public static void main(String[] args) throws IOException {
-
+		StringBuilder sb = new StringBuilder();
+		
 		int N = nextInt();
+		
 		for(int i=0;i<N;i++) {
 			for(int j=N-i;j>0;j--) {
-				System.out.print("*");
+				sb.append("*");
 			}
-			System.out.println();
+			sb.append("\n");
 		}
+		System.out.print(sb);
 	}
 	static int nextInt() throws IOException {
         int c;
