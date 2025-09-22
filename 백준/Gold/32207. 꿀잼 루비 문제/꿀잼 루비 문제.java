@@ -3,7 +3,6 @@ import java.util.*;
 
 public class Main {
     static int N, M, K;
-    static int[][] mine;
     static int answer = 0;
     
     static class Node {
@@ -16,33 +15,31 @@ public class Main {
     }
     
     static List<Node> list = new ArrayList<>();
-    static int[] prefixSum;
     
     public static void main(String[] args) throws IOException {
         N = nextInt();
         M = nextInt();
         K = nextInt();
         
-        mine = new int[N][M];
+        int T = 5*K;
+        PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> a.val - b.val);
+        
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
-                mine[i][j] = nextInt();
-                list.add(new Node(mine[i][j], i, j));
+                int val = nextInt();
+                if (pq.size() < T) {
+                    pq.offer(new Node(val, i, j));
+                } else if (pq.peek().val < val) {
+                    pq.poll();
+                    pq.offer(new Node(val, i, j));
+                }
             }
         }
         
-        // 값 내림차순 정렬
-        list.sort((a, b) -> b.val - a.val);
-        
-        // 더 보수적인 가지치기를 위해 상위 후보만 선택
-        int T = Math.min(list.size(), 25);
-        list = list.subList(0, T);
-        
-        // prefix sum 준비
-        prefixSum = new int[T + 1];
-        for (int i = 0; i < T; i++) {
-            prefixSum[i + 1] = prefixSum[i] + list.get(i).val;
+        while (!pq.isEmpty()) {
+            list.add(pq.poll());
         }
+        list.sort((a, b) -> b.val - a.val);
         
         dfs(0, 0, 0, new boolean[N][M]);
         System.out.println(answer);
@@ -50,38 +47,35 @@ public class Main {
     
     static void dfs(int idx, int cnt, int sum, boolean[][] visited) {
         // 현재까지의 합으로 답 갱신
-        if (cnt <= K) {
-            answer = Math.max(answer, sum);
-        }
+        answer = Math.max(answer, sum);
         
         // 종료 조건
         if (cnt == K || idx == list.size()) return;
         
-        // 가지치기: 남은 후보들로 최대한 선택해도 현재 답보다 작으면 가지치기
+        // 간단한 가지치기: 남은 개수만큼 현재 노드 값으로 채워도 현재 답을 못 넘으면 리턴
         int remain = K - cnt;
-        int canTake = Math.min(remain, list.size() - idx);
-        if (sum + (prefixSum[idx + canTake] - prefixSum[idx]) <= answer) {
+        if (idx < list.size() && sum + remain * list.get(idx).val <= answer) {
             return;
         }
         
         Node cur = list.get(idx);
         
         // 현재 위치가 선택 가능한지 확인 (4방향 인접 체크)
-        boolean canSelect = true;
+        boolean enable = true;
         int[] dr = {-1, 1, 0, 0};
         int[] dc = {0, 0, -1, 1};
         
         for (int d = 0; d < 4; d++) {
             int nr = cur.r + dr[d];
             int nc = cur.c + dc[d];
-            if (nr >= 0 && nr < N && nc >= 0 && nc < M && visited[nr][nc]) {
-                canSelect = false;
+            if (boundary(nr,nc) && visited[nr][nc]) {
+                enable = false;
                 break;
             }
         }
         
         // 선택하는 경우
-        if (canSelect) {
+        if (enable) {
             visited[cur.r][cur.c] = true;
             dfs(idx + 1, cnt + 1, sum + cur.val, visited);
             visited[cur.r][cur.c] = false;
@@ -89,6 +83,10 @@ public class Main {
         
         // 선택하지 않는 경우
         dfs(idx + 1, cnt, sum, visited);
+    }
+    
+    static boolean boundary(int r,int c) {
+    	return r>=0 && r<N && c>=0 && c<M;
     }
     
     static int nextInt() throws IOException {
