@@ -4,6 +4,8 @@ import java.util.*;
 public class Main {
     static int N, M, K;
     static int answer = 0;
+    static int[] dr = {0, 1, 0, -1};
+    static int[] dc = {1, 0, -1, 0};
     
     static class Node {
         int val, r, c;
@@ -21,7 +23,7 @@ public class Main {
         M = nextInt();
         K = nextInt();
         
-        int T = 5*K;
+        int T = 4*K+1;
         PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> a.val - b.val);
         
         for (int i = 0; i < N; i++) {
@@ -62,8 +64,7 @@ public class Main {
         
         // 현재 위치가 선택 가능한지 확인 (4방향 인접 체크)
         boolean enable = true;
-        int[] dr = {-1, 1, 0, 0};
-        int[] dc = {0, 0, -1, 1};
+
         
         for (int d = 0; d < 4; d++) {
             int nr = cur.r + dr[d];
