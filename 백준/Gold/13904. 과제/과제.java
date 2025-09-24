@@ -2,62 +2,54 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static class Work {
-        int deadline, score;
-        Work(int d, int s) { deadline=d; score=s; }
-    }
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		StringTokenizer st;
+		Task[] task = new Task[N];
+		int end = 0;
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			int d = Integer.parseInt(st.nextToken());
+			int w = Integer.parseInt(st.nextToken());
+			task[i] = new Task(d, w);
+			end = Math.max(end, d);
+		}
+		Arrays.sort(task);
+		int[] days = new int[end + 1];
+		int start = 1;
+		for (int i = 0; i < N; i++) {
+			int deadLine = start + task[i].d;
+			if (days[deadLine - 1] == 0) {
+				days[deadLine - 1] = task[i].w;
+			} else {
+				for (int j = deadLine - 1; j > 0; j--) {
+					if (days[j] == 0) {
+						days[j] = task[i].w;
+						break;
+					}
+				}
+			}
+		}
+		int sum = 0;
+		for (int i = 1; i <= end; i++) {
+			sum += days[i];
+		}
+		System.out.println(sum);
+	}
 
-    static int[] parent;
+	public static class Task implements Comparable<Task> {
+		int d;
+		int w;
 
-    static int find(int x) {
-        if (x <= 0) return 0;
-        if (parent[x] == x) return x;
-        return parent[x] = find(parent[x]);
-    }
+		public Task(int d, int w) {
+			this.d = d;
+			this.w = w;
+		}
 
-    static void union(int a, int b) {
-        a = find(a);
-        b = find(b);
-        parent[a] = b;
-    }
-
-    public static void main(String[] args) throws IOException {
-        int N = nextInt();
-        List<Work> list = new ArrayList<>();
-        int maxDay = 0;
-
-        for(int i=0;i<N;i++) {
-            int d = nextInt();
-            int s = nextInt();
-            list.add(new Work(d, s));
-            maxDay = Math.max(maxDay, d);
-        }
-
-        // 점수 내림차순 정렬
-        list.sort((a, b) -> b.score - a.score);
-
-        parent = new int[maxDay+1];
-        for (int i=1;i<=maxDay;i++) parent[i] = i;
-
-        int answer = 0;
-        for (Work w : list) {
-            int avail = find(w.deadline);
-            if (avail > 0) {
-                answer += w.score;
-                union(avail, avail-1); // 그 날 사용 → 바로 점프
-            }
-        }
-
-        System.out.println(answer);
-    }
-
-    static int nextInt() throws IOException {
-        int c;
-        while (!Character.isDigit(c = System.in.read()));
-        int value = c & 15;
-        while (Character.isDigit(c = System.in.read())) {
-            value = value * 10 + (c & 15);
-        }
-        return value;
-    }
+		@Override
+		public int compareTo(Task o1) {
+			return o1.w - this.w;
+		}
+	}
 }
