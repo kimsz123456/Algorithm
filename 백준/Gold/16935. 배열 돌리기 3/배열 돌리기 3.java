@@ -4,7 +4,6 @@ import java.util.*;
 public class Main {
     static int N, M;
     static int[][] arr;
-    static Stack<Integer> stack = new Stack<>();
 
     public static void main(String[] args) throws IOException {
         N = nextInt();
@@ -98,26 +97,26 @@ public class Main {
 
     public static void rotateRight() {
         int[][] temp = new int[N][M];
-        int n2 = N / 2;
-        int m2 = M / 2;
-        for (int r = 0; r < n2; r++) {
-            for (int c = 0; c < m2; c++) {
-                temp[r][c + m2] = arr[r][c];
+        for(int r=0;r<N;r++) {
+            if(r<N/2) {
+                for(int c=0;c<M;c++) {
+                    if(c<M/2) {
+                        temp[r][c] = arr[r+N/2][c];
+                    }
+                    else {
+                        temp[r][c] = arr[r][c-M/2];
+                    }
+                }
             }
-        }
-        for (int r = 0; r < n2; r++) {
-            for (int c = m2; c < M; c++) {
-                temp[r + n2][c] = arr[r][c];
-            }
-        }
-        for (int r = n2; r < N; r++) {
-            for (int c = m2; c < M; c++) {
-                temp[r][c - m2] = arr[r][c];
-            }
-        }
-        for (int r = n2; r < N; r++) {
-            for (int c = 0; c < m2; c++) {
-                temp[r - n2][c] = arr[r][c];
+            else {
+                for(int c=0;c<M;c++) {
+                    if(c<M/2) {
+                        temp[r][c] = arr[r][c+M/2];
+                    }
+                    else {
+                        temp[r][c] = arr[r-N/2][c];
+                    }
+                }
             }
         }
         arr = temp;
@@ -125,26 +124,26 @@ public class Main {
 
     public static void rotateLeft() {
         int[][] temp = new int[N][M];
-        int n2 = N / 2;
-        int m2 = M / 2;
-        for (int r = 0; r < n2; r++) {
-            for (int c = 0; c < m2; c++) {
-                temp[r + n2][c] = arr[r][c];
+        for(int r=0;r<N;r++) {
+            if(r<N/2) {
+                for(int c=0;c<M;c++) {
+                    if(c<M/2) {
+                        temp[r][c] = arr[r][c+M/2];
+                    }
+                    else {
+                        temp[r][c] = arr[r+N/2][c];
+                    }
+                }
             }
-        }
-        for (int r = n2; r < N; r++) {
-            for (int c = 0; c < m2; c++) {
-                temp[r][c + m2] = arr[r][c];
-            }
-        }
-        for (int r = n2; r < N; r++) {
-            for (int c = m2; c < M; c++) {
-                temp[r - n2][c] = arr[r][c];
-            }
-        }
-        for (int r = 0; r < n2; r++) {
-            for (int c = m2; c < M; c++) {
-                temp[r][c - m2] = arr[r][c];
+            else {
+                for(int c=0;c<M;c++) {
+                    if(c<M/2) {
+                        temp[r][c] = arr[r-N/2][c];
+                    }
+                    else {
+                        temp[r][c] = arr[r][c-M/2];
+                    }
+                }
             }
         }
         arr = temp;
