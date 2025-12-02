@@ -7,24 +7,18 @@ public class Main {
     static Stack<Integer> stack = new Stack<>();
 
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-
-        st = new StringTokenizer(br.readLine());
-        N = stoi(st.nextToken());
-        M = stoi(st.nextToken());
-        int R = stoi(st.nextToken());
+        N = nextInt();
+        M = nextInt();
+        int R = nextInt();
 
         arr = new int[N][M];
         for(int r=0;r<N;r++) {
-            st = new StringTokenizer(br.readLine());
             for(int c=0;c<M;c++) {
-                arr[r][c] = stoi(st.nextToken());
+                arr[r][c] = nextInt();
             }
         }
-        st = new StringTokenizer(br.readLine());
         for(int i=0;i<R;i++) {
-            int d = stoi(st.nextToken());
+            int d = nextInt();
             switch(d) {
                 case 1:
                     upDown();
@@ -158,7 +152,13 @@ public class Main {
         arr = temp;
     }
 
-    public static int stoi(String str) {
-        return Integer.parseInt(str);
+    static int nextInt() throws IOException {
+        int c;
+        while (!Character.isDigit(c = System.in.read()));
+        int value = c & 15;
+        while (Character.isDigit(c = System.in.read())) {
+            value = value * 10 + (c & 15);
+        }
+        return value;
     }
 }
