@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int N,M;
+    static int N, M;
     static int[][] arr;
     static Stack<Integer> stack = new Stack<>();
 
@@ -12,14 +12,14 @@ public class Main {
         int R = nextInt();
 
         arr = new int[N][M];
-        for(int r=0;r<N;r++) {
-            for(int c=0;c<M;c++) {
+        for (int r = 0; r < N; r++) {
+            for (int c = 0; c < M; c++) {
                 arr[r][c] = nextInt();
             }
         }
-        for(int i=0;i<R;i++) {
+        for (int i = 0; i < R; i++) {
             int d = nextInt();
-            switch(d) {
+            switch (d) {
                 case 1:
                     upDown();
                     break;
@@ -45,31 +45,29 @@ public class Main {
 
     public static void print() {
         StringBuilder sb = new StringBuilder();
-        for(int r=0;r<arr.length;r++) {
-            for(int c=0;c<arr[0].length;c++) {
+        for (int r = 0; r < arr.length; r++) {
+            for (int c = 0; c < arr[0].length; c++) {
                 sb.append(arr[r][c]).append(" ");
             }
             sb.append("\n");
         }
         System.out.print(sb);
     }
+
     public static void upDown() {
-        for(int c=0;c<arr[0].length;c++) {
-            for(int r=0;r<arr.length;r++) {
-                stack.add(arr[r][c]);
-            }
-            for(int r=0;r<arr.length;r++) {
-                arr[r][c] = stack.pop();
-            }
+        for (int r = 0; r < N / 2; r++) {
+            int[] tmp = arr[r];
+            arr[r] = arr[N - 1 - r];
+            arr[N - 1 - r] = tmp;
         }
     }
+
     public static void leftRight() {
-        for(int r=0;r<arr.length;r++) {
-            for(int c=0;c<arr[0].length;c++) {
-                stack.add(arr[r][c]);
-            }
-            for(int c=0;c<arr[0].length;c++) {
-                arr[r][c] = stack.pop();
+        for (int r = 0; r < N; r++) {
+            for (int c = 0; c < M / 2; c++) {
+                int tmp = arr[r][c];
+                arr[r][c] = arr[r][M - 1 - c];
+                arr[r][M - 1 - c] = tmp;
             }
         }
     }
@@ -78,9 +76,9 @@ public class Main {
         N = arr[0].length;
         M = arr.length;
         int[][] temp = new int[N][M];
-        for(int r=0;r<N;r++) {
-            for(int c=0;c<M;c++) {
-                temp[r][M-1-c] = arr[c][r];
+        for (int r = 0; r < N; r++) {
+            for (int c = 0; c < M; c++) {
+                temp[r][M - 1 - c] = arr[c][r];
             }
         }
         arr = temp;
@@ -90,9 +88,9 @@ public class Main {
         N = arr[0].length;
         M = arr.length;
         int[][] temp = new int[N][M];
-        for(int r=0;r<N;r++) {
-            for(int c=0;c<M;c++) {
-                temp[N-1-r][c] = arr[c][r];
+        for (int r = 0; r < N; r++) {
+            for (int c = 0; c < M; c++) {
+                temp[N - 1 - r][c] = arr[c][r];
             }
         }
         arr = temp;
@@ -100,26 +98,26 @@ public class Main {
 
     public static void rotateRight() {
         int[][] temp = new int[N][M];
-        for(int r=0;r<N;r++) {
-            if(r<N/2) {
-                for(int c=0;c<M;c++) {
-                    if(c<M/2) {
-                        temp[r][c] = arr[r+N/2][c];
-                    }
-                    else {
-                        temp[r][c] = arr[r][c-M/2];
-                    }
-                }
+        int n2 = N / 2;
+        int m2 = M / 2;
+        for (int r = 0; r < n2; r++) {
+            for (int c = 0; c < m2; c++) {
+                temp[r][c + m2] = arr[r][c];
             }
-            else {
-                for(int c=0;c<M;c++) {
-                    if(c<M/2) {
-                        temp[r][c] = arr[r][c+M/2];
-                    }
-                    else {
-                        temp[r][c] = arr[r-N/2][c];
-                    }
-                }
+        }
+        for (int r = 0; r < n2; r++) {
+            for (int c = m2; c < M; c++) {
+                temp[r + n2][c] = arr[r][c];
+            }
+        }
+        for (int r = n2; r < N; r++) {
+            for (int c = m2; c < M; c++) {
+                temp[r][c - m2] = arr[r][c];
+            }
+        }
+        for (int r = n2; r < N; r++) {
+            for (int c = 0; c < m2; c++) {
+                temp[r - n2][c] = arr[r][c];
             }
         }
         arr = temp;
@@ -127,26 +125,26 @@ public class Main {
 
     public static void rotateLeft() {
         int[][] temp = new int[N][M];
-        for(int r=0;r<N;r++) {
-            if(r<N/2) {
-                for(int c=0;c<M;c++) {
-                    if(c<M/2) {
-                        temp[r][c] = arr[r][c+M/2];
-                    }
-                    else {
-                        temp[r][c] = arr[r+N/2][c];
-                    }
-                }
+        int n2 = N / 2;
+        int m2 = M / 2;
+        for (int r = 0; r < n2; r++) {
+            for (int c = 0; c < m2; c++) {
+                temp[r + n2][c] = arr[r][c];
             }
-            else {
-                for(int c=0;c<M;c++) {
-                    if(c<M/2) {
-                        temp[r][c] = arr[r-N/2][c];
-                    }
-                    else {
-                        temp[r][c] = arr[r][c-M/2];
-                    }
-                }
+        }
+        for (int r = n2; r < N; r++) {
+            for (int c = 0; c < m2; c++) {
+                temp[r][c + m2] = arr[r][c];
+            }
+        }
+        for (int r = n2; r < N; r++) {
+            for (int c = m2; c < M; c++) {
+                temp[r - n2][c] = arr[r][c];
+            }
+        }
+        for (int r = 0; r < n2; r++) {
+            for (int c = m2; c < M; c++) {
+                temp[r][c - m2] = arr[r][c];
             }
         }
         arr = temp;
@@ -154,7 +152,8 @@ public class Main {
 
     static int nextInt() throws IOException {
         int c;
-        while (!Character.isDigit(c = System.in.read()));
+        while (!Character.isDigit(c = System.in.read()))
+            ;
         int value = c & 15;
         while (Character.isDigit(c = System.in.read())) {
             value = value * 10 + (c & 15);
