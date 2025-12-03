@@ -3,35 +3,35 @@ import java.util.*;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringBuilder sb = new StringBuilder();
-		StringTokenizer st;
-		int T = Integer.parseInt(br.readLine());
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
+        StringTokenizer st;
 
-		for (int tc = 1; tc <= T; tc++) {
+        int T = stoi(br.readLine());
+        for(int tc=1;tc<=T;tc++) {
+            int N = stoi(br.readLine());
+            st = new StringTokenizer(br.readLine());
+            PriorityQueue<Long> pq = new PriorityQueue<>();
 
-			PriorityQueue<Long> pq = new PriorityQueue<>();
-			
-			int N =Integer.parseInt(br.readLine());
-			
-			st = new StringTokenizer(br.readLine());
-			for (int i = 0; i < N; i++) {
-				pq.add(Long.parseLong(st.nextToken()));
-			}
+            for(int i=0;i<N;i++) {
+                pq.add(Long.parseLong(st.nextToken()));
+            }
 
-			long sum = 0;
-			while (pq.size() > 1) {
-				long first = pq.poll();
-				long second = pq.poll();
+            long answer = 0;
+            while(pq.size()>1) {
+                long first = pq.poll();
+                long second = pq.poll();
 
-				sum += first + second;
+                answer += (first + second);
+                pq.add(first+second);
+            }
+            sb.append(answer).append("\n");
+        }
+        System.out.print(sb);
+    }
 
-				pq.add(first + second);
-			}
-			
-			sb.append(sum).append("\n");
-		}
-		System.out.print(sb);
-	}
+    public static int stoi(String str) {
+        return Integer.parseInt(str);
+    }
 }
