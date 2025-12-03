@@ -4,18 +4,15 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
-        StringTokenizer st;
 
-        int T = stoi(br.readLine());
+        int T = nextInt();
         for(int tc=1;tc<=T;tc++) {
-            int N = stoi(br.readLine());
-            st = new StringTokenizer(br.readLine());
+            int N = nextInt();
             PriorityQueue<Long> pq = new PriorityQueue<>();
 
             for(int i=0;i<N;i++) {
-                pq.add(Long.parseLong(st.nextToken()));
+                pq.add((long) nextInt());
             }
 
             long answer = 0;
@@ -31,7 +28,13 @@ public class Main {
         System.out.print(sb);
     }
 
-    public static int stoi(String str) {
-        return Integer.parseInt(str);
+    static int nextInt() throws IOException {
+        int c;
+        while (!Character.isDigit(c = System.in.read()));
+        int value = c & 15;
+        while (Character.isDigit(c = System.in.read())) {
+            value = value * 10 + (c & 15);
+        }
+        return value;
     }
 }
